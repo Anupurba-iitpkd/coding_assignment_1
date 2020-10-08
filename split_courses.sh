@@ -12,6 +12,6 @@ echo "$CE"
 
 while read -r LINE
 do
-	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
-
+#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
+	grep "$LINE"  branch_CE.csv > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv"
 done < branch_CE_Course_list
