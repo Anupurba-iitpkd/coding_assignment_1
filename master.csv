@@ -1,7 +1,0 @@
-Usage: 
-	$ ./generator  <#output_lines>
-
-where: 
-	 #output_lines is the number of lines (student records) to generate
-	 (should be non-zero, positive). 
-

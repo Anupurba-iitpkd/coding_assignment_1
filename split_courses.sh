@@ -1,19 +1,42 @@
 #!/bin/bash
 
 
+#function to generate the master.csv file, i.e. the main content file. with or without passed file name (default file name : master.csv)
+function generate_master(){
+
+		arr_args=($OPTARG)
+		arr_args_count=${#arr_args[@]}
+		if [[ ${#arr_args[@]} > 2 ]]
+		then 
+			echo "too many arguments to option"
+			exit 0
+		else
+			if echo ${arr_args[0]} | egrep -q '^[0-9]+$'
+			then 
+			     ./generator ${arr_args[0]} > "${arr_args[1]}.csv"
+			     FILE_NAME="${arr_args[1]}.csv"
+			else
+			     echo "this argument should be numeric type"
+			fi
+		fi
+		if [[ ${#arr_args[@]} = 1  ]]
+		then
+			 ./generator ${arr_args[0]} > master.csv
+			 FILE_NAME=master.csv
+		fi
+}
 
 #function to split the master.csv file into branch wise files
 function split_branches(){
 	
-	grep 'CS' master.csv > branch_CS.csv
-	grep 'ME' master.csv > branch_ME.csv
-	grep 'CE' master.csv > branch_CE.csv
-	grep 'EE' master.csv > branch_EE.csv
+	grep 'CS' ${FILE_NAME} > branch_CS.csv
+	grep 'ME' ${FILE_NAME} > branch_ME.csv
+	grep 'CE' ${FILE_NAME} > branch_CE.csv
+	grep 'EE' ${FILE_NAME} > branch_EE.csv
 
 
 }
 
-split_branches
 
 #function to prepare the unique courses list for each branch for further proceedngs:
 function create_unique_course_list(){
@@ -24,12 +47,15 @@ function create_unique_course_list(){
 	EE= cut -d, -f2 branch_EE.csv | sort -d | uniq > branch_EE_Course_list
 }
 
-create_unique_course_list
-
 
 # function to create all courses from each and every branch :
 function create_all_courses(){
 	
+
+split_branches
+
+create_unique_course_list
+
 #creating the unique course files for CE branch
 while read -r LINE
 do
@@ -62,13 +88,8 @@ do
 done < branch_EE_Course_list
 }
 
-create_all_courses
-
-option=''
-source="/home/anupurba/prog_lab_week2/lab1"
-dest='/temp'
-
-while getopts :sg: option
+# code to take arguments and evaluate options : 
+while getopts :sg:c:a option
 do
 	case $option in
 	s)
@@ -77,21 +98,16 @@ do
 		make
 		;;
 	g)
-		arr_args=($OPTARG)
-		arr_args_count=${#arr_args[@]}
-		echo $arr_args_count
-		re='^[0-9]+$'
-		echo "received $option"
-		echo "option argument is ${arr_args[@]}"
-		echo "number of arguments passed is : ${#arr_args[@]}"
-		if [[ ${#arr_args[@]} > 3 ]]
-		then 
-			echo "too many arguments to option"
-			exit 0
-		else
-			./generator ${arr[0]} > "${arr[1]}.csv"
-		fi
-	
+		generate_master
+		;;
+	c)
+		arr_c_args=($OPTARG)
+		arr_c_arg_count=${#arr_c_args[@]}
+		create_all_courses
+		;;
+	a)
+		echo "option generated : $option"
+		create_all_courses
 		;;
 	:)
 		echo "$OPTARG requires an argument"
@@ -103,9 +119,17 @@ do
 		;;
 	*)
 		echo "invalid option, goto -h for help"
+		exit 0
 		;;
 	esac
 done
+
+
+
+
+
+
+
 
 
 
