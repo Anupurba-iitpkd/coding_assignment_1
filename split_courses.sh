@@ -123,19 +123,18 @@ do
 done < branch_EE_Course_list
 }
 
+#function to create specific courses when -c is pressed
 function create_specific_course(){
 
 	split_branches
 	create_unique_course_list
 	COURSE_NAME=$1
 	BRANCH_NAME=${COURSE_NAME:0:2}
-	echo "$COURSE_NAME"
-	echo "$BRANCH_NAME"
-	echo "branch_${BRANCH_NAME}.csv"
 	grep "$COURSE_NAME" "branch_${BRANCH_NAME}.csv" > "/home/anupurba/prog_lab_week2/lab1/courses/${BRANCH_NAME}/${COURSE_NAME}.csv"
 
 	COURSE_PATH="/home/anupurba/prog_lab_week2/lab1/courses/${BRANCH_NAME}/${COURSE_NAME}.csv"
-	echo "$COURSE_PATH"
+	
+	#code to sort the file
 	sort -t"," -k 1,1 -k 3,3 -n -r "${COURSE_PATH}" -o "${COURSE_PATH}"
 	awk -F"," '!seen[$1]++' "${COURSE_PATH}" > "${COURSE_PATH}_dr"
 	cat  "${COURSE_PATH}_dr" > "${COURSE_PATH}"
@@ -143,31 +142,47 @@ function create_specific_course(){
 
 }
 
-# code to take arguments and evaluate options : 
-while getopts :sg:c:a option
-do
-		
-		
+#function to create specific branches when -b is pressed
+function create_specific_branches(){
 	
+	BRANCH_NAME=$1
+	grep "$BRANCH_NAME" ${FILE_NAME} > "branch_${BRANCH_NAME}.csv"
+
+
+
+}
+# code to take arguments and evaluate options : 
+	
+	if [ "$#" = 0 ]
+	then
+		echo "expected options. -h for help"
+		exit 101
+	else
+	
+		while getopts :sg:c:ab: option
+		do
 		case $option in
-		s)
-			echo "received $option"
-			echo "option argument is $OPTARG"
+		s|--setup)
 			make
 			;;
-		g)
+		g|--generate)
 			generate_master
 			;;
-		c)
+		c|--course)
 			arr_c_args=($OPTARG)
-			arr_c_arg_count=${#arr_c_args[@]}
 			for i in ${arr_c_args[@]}
 			do
-				echo "$i"
 				create_specific_course $i
 			done
-#			create_all_courses
 			;;
+		b)
+			arr_b_args=($OPTARG)
+			for i in ${arr_b_args[@]}
+			do
+				create_specific_branches $i
+			done
+			;;
+		
 		a)
 			echo "option generated : $option"
 			create_all_courses
@@ -181,12 +196,16 @@ do
 			exit 0
 			;;
 		*)
+			
 			echo "invalid option, goto -h for help"
 			exit 0
 			;;
-		esac
 	
-done
+		esac
+
+		done
+	fi
+	
 
 
 
