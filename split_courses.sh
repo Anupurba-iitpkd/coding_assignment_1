@@ -63,6 +63,9 @@ do
 	grep "$LINE"  branch_CE.csv > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv"
 	CE_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv"
 	sort -t"," -k 1,1 -k 3,3 -n -r $CE_FILE_NAME -o $CE_FILE_NAME 
+	awk -F"," '!seen[$1]++' $CE_FILE_NAME > "${CE_FILE_NAME}_dr"
+	cat ${CE_FILE_NAME}_dr > $CE_FILE_NAME
+	rm ${CE_FILE_NAME}_dr
 done < branch_CE_Course_list
 
 
@@ -73,7 +76,10 @@ do
 	grep "$LINE"  branch_ME.csv > "/home/anupurba/prog_lab_week2/lab1/courses/ME/${LINE}.csv"
 
 	ME_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/ME/${LINE}.csv"
-	sort -t"," -k 1,1 -k 3,3 -n -r $ME_FILE_NAME -o $ME_FILE_NAME 
+	sort -t"," -k 1,1 -k 3,3 -n -r $ME_FILE_NAME -o $ME_FILE_NAME
+	awk -F"," '!seen[$1]++' $ME_FILE_NAME > "${ME_FILE_NAME}_dr"
+	cat ${ME_FILE_NAME}_dr > $ME_FILE_NAME
+	rm ${ME_FILE_NAME}_dr
 done < branch_ME_Course_list
 
 
@@ -84,7 +90,10 @@ do
 	grep "$LINE"  branch_CS.csv > "/home/anupurba/prog_lab_week2/lab1/courses/CS/${LINE}.csv"
 
 	CS_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/CS/${LINE}.csv"
-	sort -t"," -k 1,1 -k 3,3 -n -r $CS_FILE_NAME -o $CS_FILE_NAME 
+	sort -t"," -k 1,1 -k 3,3 -n -r $CS_FILE_NAME -o $CS_FILE_NAME
+	awk -F"," '!seen[$1]++' $CS_FILE_NAME > "${CS_FILE_NAME}_dr"
+	cat ${CS_FILE_NAME}_dr > $CS_FILE_NAME
+	rm ${CS_FILE_NAME}_dr
 done < branch_CS_Course_list
 
 #creating the unique course files for EE branch
@@ -94,7 +103,10 @@ do
 	grep "$LINE"  branch_EE.csv > "/home/anupurba/prog_lab_week2/lab1/courses/EE/${LINE}.csv"
 
 	EE_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/EE/${LINE}.csv"
-	sort -t"," -k 1,1 -k 3,3 -n -r $EE_FILE_NAME -o $EE_FILE_NAME 
+	sort -t"," -k 1,1 -k 3,3 -n -r $EE_FILE_NAME -o $EE_FILE_NAME
+	awk -F"," '!seen[$1]++' $EE_FILE_NAME > "${EE_FILE_NAME}_dr"
+	cat ${EE_FILE_NAME}_dr > $EE_FILE_NAME
+	rm ${EE_FILE_NAME}_dr
 
 done < branch_EE_Course_list
 }
@@ -102,9 +114,10 @@ done < branch_EE_Course_list
 # code to take arguments and evaluate options : 
 while getopts :sg:c:a option
 do
-	if [ "$#" -eq 0  ]
+	if [[ "$#" -eq "0"	]]
 	then 
 		echo "command expects option. press -h for help"
+		exit 0
 	else
 		case $option in
 		s)
