@@ -47,17 +47,7 @@ function create_unique_course_list(){
 	EE= cut -d, -f2 branch_EE.csv | sort -d | uniq > branch_EE_Course_list
 }
 
-function remove_duplicates(){
 
-
-	$COURSE_FILE="$1"
-	echo "${COURSE_FILE}"
-	sort -t"," -k 1,1 -k 3,3 -n -r "${COURSE_FILE}" -o "${COURSE_FILE}"
-	awk -F"," '!seen[$1]++' "${COURSE_FILE}" > "${COURSE_FILE}_dr"
-	cat "${COURSE_FILE}_dr" > "${COURSE_FILE}"
-	rm "${COURSE_FILE}_dr"
-
-}
 
 # function to create all courses from each and every branch :
 function create_all_courses(){
@@ -73,11 +63,10 @@ do
 	#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
 	grep "$LINE"  branch_CE.csv > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv"
 	CE_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv"
-	sort -t"," -k 1,1 -k 3,3 -n -r ${CE_FILE_NAME} -o ${CE_FILE_NAME}
-	awk -F"," '!seen[$1]++' ${CE_FILE_NAME} > "${CE_FILE_NAME}_dr"
-	cat "${CE_FILE_NAME}_dr" > ${CE_FILE_NAME}
-	rm "${CE_FILE_NAME}_dr"
-#	remove_duplicates $CE_FILE_NAME
+	sort -t"," -k 1,1 -k 3,3 -n -r $CE_FILE_NAME -o $CE_FILE_NAME 
+	awk -F"," '!seen[$1]++' $CE_FILE_NAME > "${CE_FILE_NAME}_dr"
+	cat ${CE_FILE_NAME}_dr > $CE_FILE_NAME
+	rm ${CE_FILE_NAME}_dr
 done < branch_CE_Course_list
 
 
@@ -123,32 +112,14 @@ do
 done < branch_EE_Course_list
 }
 
-function create_specific_course(){
-
-	split_branches
-	create_unique_course_list
-	COURSE_NAME=$1
-	BRANCH_NAME=${COURSE_NAME:0:2}
-	echo "$COURSE_NAME"
-	echo "$BRANCH_NAME"
-	echo "branch_${BRANCH_NAME}.csv"
-	grep "$COURSE_NAME" "branch_${BRANCH_NAME}.csv" > "/home/anupurba/prog_lab_week2/lab1/courses/${BRANCH_NAME}/${COURSE_NAME}.csv"
-
-	COURSE_PATH="/home/anupurba/prog_lab_week2/lab1/courses/${BRANCH_NAME}/${COURSE_NAME}.csv"
-	echo "$COURSE_PATH"
-	sort -t"," -k 1,1 -k 3,3 -n -r "${COURSE_PATH}" -o "${COURSE_PATH}"
-	awk -F"," '!seen[$1]++' "${COURSE_PATH}" > "${COURSE_PATH}_dr"
-	cat  "${COURSE_PATH}_dr" > "${COURSE_PATH}"
-	rm "${COURSE_PATH}_dr"
-
-}
-
 # code to take arguments and evaluate options : 
 while getopts :sg:c:a option
 do
-		
-		
-	
+	if [[ "$#" -eq "0"	]]
+	then 
+		echo "command expects option. press -h for help"
+		exit 0
+	else
 		case $option in
 		s)
 			echo "received $option"
@@ -161,12 +132,7 @@ do
 		c)
 			arr_c_args=($OPTARG)
 			arr_c_arg_count=${#arr_c_args[@]}
-			for i in ${arr_c_args[@]}
-			do
-				echo "$i"
-				create_specific_course $i
-			done
-#			create_all_courses
+			create_all_courses
 			;;
 		a)
 			echo "option generated : $option"
@@ -185,7 +151,7 @@ do
 			exit 0
 			;;
 		esac
-	
+	fi
 done
 
 
