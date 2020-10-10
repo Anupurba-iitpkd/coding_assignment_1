@@ -61,6 +61,8 @@ while read -r LINE
 do
 	#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
 	grep "$LINE"  branch_CE.csv > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv"
+	CE_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv"
+	sort -t"," -k 1,1 -k 3,3 -n -r $CE_FILE_NAME -o $CE_FILE_NAME 
 done < branch_CE_Course_list
 
 
@@ -69,6 +71,9 @@ while read -r LINE
 do
 	#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
 	grep "$LINE"  branch_ME.csv > "/home/anupurba/prog_lab_week2/lab1/courses/ME/${LINE}.csv"
+
+	ME_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/ME/${LINE}.csv"
+	sort -t"," -k 1,1 -k 3,3 -n -r $ME_FILE_NAME -o $ME_FILE_NAME 
 done < branch_ME_Course_list
 
 
@@ -77,6 +82,9 @@ while read -r LINE
 do
 	#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
 	grep "$LINE"  branch_CS.csv > "/home/anupurba/prog_lab_week2/lab1/courses/CS/${LINE}.csv"
+
+	CS_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/CS/${LINE}.csv"
+	sort -t"," -k 1,1 -k 3,3 -n -r $CS_FILE_NAME -o $CS_FILE_NAME 
 done < branch_CS_Course_list
 
 #creating the unique course files for EE branch
@@ -85,43 +93,51 @@ do
 	#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
 	grep "$LINE"  branch_EE.csv > "/home/anupurba/prog_lab_week2/lab1/courses/EE/${LINE}.csv"
 
+	EE_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/EE/${LINE}.csv"
+	sort -t"," -k 1,1 -k 3,3 -n -r $EE_FILE_NAME -o $EE_FILE_NAME 
+
 done < branch_EE_Course_list
 }
 
 # code to take arguments and evaluate options : 
 while getopts :sg:c:a option
 do
-	case $option in
-	s)
-		echo "received $option"
-		echo "option argument is $OPTARG"
-		make
-		;;
-	g)
-		generate_master
-		;;
-	c)
-		arr_c_args=($OPTARG)
-		arr_c_arg_count=${#arr_c_args[@]}
-		create_all_courses
-		;;
-	a)
-		echo "option generated : $option"
-		create_all_courses
-		;;
-	:)
-		echo "$OPTARG requires an argument"
-		exit 101
-		;;
-	h)
-		echo "help option"
-		exit 0
-		;;
-	*)
-		echo "invalid option, goto -h for help"
-		exit 0
-		;;
-	esac
+	if [ "$#" -eq 0  ]
+	then 
+		echo "command expects option. press -h for help"
+	else
+		case $option in
+		s)
+			echo "received $option"
+			echo "option argument is $OPTARG"
+			make
+			;;
+		g)
+			generate_master
+			;;
+		c)
+			arr_c_args=($OPTARG)
+			arr_c_arg_count=${#arr_c_args[@]}
+			create_all_courses
+			;;
+		a)
+			echo "option generated : $option"
+			create_all_courses
+			;;	
+		:)
+			echo "$OPTARG requires an argument"
+			exit 101
+			;;
+		h)
+			echo "help option"
+			exit 0
+			;;
+		*)
+			echo "invalid option, goto -h for help"
+			exit 0
+			;;
+		esac
+	fi
 done
 
 
