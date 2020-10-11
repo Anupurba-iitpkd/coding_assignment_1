@@ -70,9 +70,8 @@ create_unique_course_list
 #creating the unique course files for CE branch
 while read -r LINE
 do
-	#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
-	grep "$LINE"  branch_CE.csv > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv"
-	CE_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv"
+	grep "$LINE"  branch_CE.csv > "courses/CE/${LINE}.csv"
+	CE_FILE_NAME="courses/CE/${LINE}.csv"
 	sort -t"," -k 1,1 -k 3,3 -n -r ${CE_FILE_NAME} -o ${CE_FILE_NAME}
 	awk -F"," '!seen[$1]++' ${CE_FILE_NAME} > "${CE_FILE_NAME}_dr"
 	cat "${CE_FILE_NAME}_dr" > ${CE_FILE_NAME}
@@ -84,10 +83,9 @@ done < branch_CE_Course_list
 #creating the unique course files for ME branch
 while read -r LINE
 do
-	#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
-	grep "$LINE"  branch_ME.csv > "/home/anupurba/prog_lab_week2/lab1/courses/ME/${LINE}.csv"
+	grep "$LINE"  branch_ME.csv > "courses/ME/${LINE}.csv"
 
-	ME_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/ME/${LINE}.csv"
+	ME_FILE_NAME="courses/ME/${LINE}.csv"
 	sort -t"," -k 1,1 -k 3,3 -n -r $ME_FILE_NAME -o $ME_FILE_NAME
 	awk -F"," '!seen[$1]++' $ME_FILE_NAME > "${ME_FILE_NAME}_dr"
 	cat ${ME_FILE_NAME}_dr > $ME_FILE_NAME
@@ -98,10 +96,9 @@ done < branch_ME_Course_list
 #creating the unique course files for CS branch
 while read -r LINE
 do
-	#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
-	grep "$LINE"  branch_CS.csv > "/home/anupurba/prog_lab_week2/lab1/courses/CS/${LINE}.csv"
+	grep "$LINE"  branch_CS.csv > "courses/CS/${LINE}.csv"
 
-	CS_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/CS/${LINE}.csv"
+	CS_FILE_NAME="courses/CS/${LINE}.csv"
 	sort -t"," -k 1,1 -k 3,3 -n -r $CS_FILE_NAME -o $CS_FILE_NAME
 	awk -F"," '!seen[$1]++' $CS_FILE_NAME > "${CS_FILE_NAME}_dr"
 	cat ${CS_FILE_NAME}_dr > $CS_FILE_NAME
@@ -111,10 +108,9 @@ done < branch_CS_Course_list
 #creating the unique course files for EE branch
 while read -r LINE
 do
-	#	echo $LINE > "/home/anupurba/prog_lab_week2/lab1/courses/CE/${LINE}.csv" 
-	grep "$LINE"  branch_EE.csv > "/home/anupurba/prog_lab_week2/lab1/courses/EE/${LINE}.csv"
+	grep "$LINE"  branch_EE.csv > "courses/EE/${LINE}.csv"
 
-	EE_FILE_NAME="/home/anupurba/prog_lab_week2/lab1/courses/EE/${LINE}.csv"
+	EE_FILE_NAME="courses/EE/${LINE}.csv"
 	sort -t"," -k 1,1 -k 3,3 -n -r $EE_FILE_NAME -o $EE_FILE_NAME
 	awk -F"," '!seen[$1]++' $EE_FILE_NAME > "${EE_FILE_NAME}_dr"
 	cat ${EE_FILE_NAME}_dr > $EE_FILE_NAME
@@ -163,6 +159,11 @@ function create_specific_branches(){
 		do
 		case $option in
 		s|--setup)
+			mkdir courses
+			mkdir courses/CE
+			mkdir courses/CS
+			mkdir courses/EE
+			mkdir courses/ME
 			make
 			;;
 		g|--generate)
